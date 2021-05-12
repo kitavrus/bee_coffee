@@ -35,7 +35,8 @@ class _CardPageAnime2State extends State<CardPageAnime2> {
         // makeCupAnimeList[0].forward(from: 0);
         // makeCupAnimeList[1].forward(from: 0);
 
-        makeCupAnimeFunctionList[0].call();
+        makeCupAnimeFunctionList[0](Colors.red);
+        // makeCupAnimeFunctionList[0].call();
 
         print("FloatingActionButton 2");
       }),
@@ -147,9 +148,11 @@ class AnimeCup extends StatefulWidget {
 class _AnimeCupState extends State<AnimeCup>
     with SingleTickerProviderStateMixin {
   // var squareScale = 0.0;
-  final GlobalKey<_AnimeCupState> listKey = GlobalKey<_AnimeCupState>();
+  // final GlobalKey<_AnimeCupState> listKey = GlobalKey<_AnimeCupState>();
 
   AnimationController _controller;
+
+  Color _color = Colors.transparent;
 
   @override
   void initState() {
@@ -192,8 +195,9 @@ class _AnimeCupState extends State<AnimeCup>
     // );
     //
 
-    Function getF() {
+    void getF(Color color) {
       setState(() {
+        _color = color;
         _controller.forward(from: 0.0);
       });
     }
@@ -217,7 +221,10 @@ class _AnimeCupState extends State<AnimeCup>
               ),
             );
           },
-          child: widget.cup),
+          child: Container(
+            color: _color,
+            child: widget.cup,
+          )),
     );
   }
 
