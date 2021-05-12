@@ -47,7 +47,7 @@ class WelcomePage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) {
                       return CardPageAnime2();
                       // return CardPageAnime();
-                      return CardPage();
+                      // return CardPage();
                     }),
                   );
                 },

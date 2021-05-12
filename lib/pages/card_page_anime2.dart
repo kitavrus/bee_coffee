@@ -14,14 +14,10 @@ List<MakeCup> makeCupList = [
   // MakeCup(type: CupType.gift, key: ValueKey(6)),
 ];
 
-List<AnimationController> makeCupAnimeList = [
-  // MakeCup(type: CupType.full, key: ValueKey(1)),
-  // MakeCup(type: CupType.empty, key: ValueKey(2)),
-  // MakeCup(type: CupType.empty, key: ValueKey(3)),
-  // MakeCup(type: CupType.empty, key: ValueKey(4)),
-  // MakeCup(type: CupType.empty, key: ValueKey(5)),
-  // MakeCup(type: CupType.gift, key: ValueKey(6)),
-];
+List<AnimationController> makeCupAnimeList = [];
+List<Function> makeCupAnimeFunctionList = [];
+
+// List<GlobalKey> myGlobalKeyList = [];
 
 class CardPageAnime2 extends StatefulWidget {
   @override
@@ -36,9 +32,12 @@ class _CardPageAnime2State extends State<CardPageAnime2> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
         // print(makeCupList[1].hashCode);
-        makeCupAnimeList[0].forward(from: 0);
-        makeCupAnimeList[1].forward(from: 0);
-        print("FloatingActionButton");
+        // makeCupAnimeList[0].forward(from: 0);
+        // makeCupAnimeList[1].forward(from: 0);
+
+        makeCupAnimeFunctionList[0].call();
+
+        print("FloatingActionButton 2");
       }),
       body: SafeArea(
         child: Container(
@@ -148,6 +147,7 @@ class AnimeCup extends StatefulWidget {
 class _AnimeCupState extends State<AnimeCup>
     with SingleTickerProviderStateMixin {
   // var squareScale = 0.0;
+  final GlobalKey<_AnimeCupState> listKey = GlobalKey<_AnimeCupState>();
 
   AnimationController _controller;
 
@@ -170,6 +170,8 @@ class _AnimeCupState extends State<AnimeCup>
 
     makeCupAnimeList.add(_controller);
 
+    // _counterState = GlobalKey();
+
     // TODO: implement initState
     super.initState();
   }
@@ -189,6 +191,14 @@ class _AnimeCupState extends State<AnimeCup>
     //   child: widget.cup,
     // );
     //
+
+    Function getF() {
+      setState(() {
+        _controller.forward(from: 0.0);
+      });
+    }
+
+    makeCupAnimeFunctionList.add(getF);
 
     return InkWell(
       onTap: () {

@@ -12,6 +12,8 @@ List<MakeCup> makeCupList = [
   MakeCup(type: CupType.gift, key: ValueKey(6)),
 ];
 
+List<AnimationController> makeCupAnimeList = [];
+
 class CardPage extends StatefulWidget {
   @override
   _CardPageState createState() => _CardPageState();
@@ -24,12 +26,10 @@ class _CardPageState extends State<CardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        AnimeCup(
-          cup: makeCupList[1],
-          key: UniqueKey(),
-        );
-
-        print(makeCupList[1].hashCode);
+        // print(makeCupList[1].hashCode);
+        makeCupAnimeList[0].forward(from: 0);
+        // makeCupAnimeList[1].forward(from: 0);
+        print("FloatingActionButton");
 
         // Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
         // TweenAnimationBuilder(
@@ -206,6 +206,8 @@ class _AnimeCupState extends State<AnimeCup>
     Future.delayed(Duration(milliseconds: 2000), () {
       _controller.forward(from: 0.0);
     });
+
+    makeCupAnimeList.add(_controller);
 
     // TODO: implement initState
     super.initState();
