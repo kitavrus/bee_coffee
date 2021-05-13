@@ -153,10 +153,11 @@ Widget getCup(String cupType) {
 class AnimeCup extends StatefulWidget {
   // final IconData cup;
   final Widget cup;
+  final String cupStatus;
   // final Function onTap;
 
   // AnimeCup({this.cup, this.onTap, key}) : super(key: key);
-  AnimeCup({this.cup, key}) : super(key: key);
+  AnimeCup({this.cup, key, this.cupStatus}) : super(key: key);
 
   @override
   _AnimeCupState createState() => _AnimeCupState();
@@ -194,7 +195,7 @@ class _AnimeCupState extends State<AnimeCup>
 
   void getF(int color) {
     setState(() {
-      _color = color;
+      // _color = color;
       _controller.forward(from: 0.0);
     });
   }
@@ -226,7 +227,7 @@ class _AnimeCupState extends State<AnimeCup>
       child: AnimatedBuilder(
           animation: _controller,
           builder: (BuildContext _, child) {
-            return _color == 0
+            return widget.cupStatus == 'start'
                 ? _transformScale(child, _controller)
                 : _transformRotate(child, _controller);
           },
