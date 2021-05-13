@@ -1,5 +1,6 @@
 import 'package:bee_coffee/pages/card_page.dart';
 import 'package:bee_coffee/pages/card_page_anime2.dart';
+import 'package:bee_coffee/pages/card_page_anime3.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,9 @@ class WelcomePage extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return CardPageAnime2();
+                      // return CardPageBloc();
+                      return CardPageAnime3();
+                      // return CardPageAnime2();
                       // return CardPageAnime();
                       // return CardPage();
                     }),

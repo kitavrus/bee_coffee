@@ -1,30 +1,36 @@
 import 'package:bee_coffee/color_bloc.dart';
+import 'package:bee_coffee/datasources/local_data_source.dart';
+import 'package:bee_coffee/repository/cup_repository.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 // import 'package:flutter/animation.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 
-List<MakeCup> makeCupList = [
-  MakeCup(type: CupType.full, key: ValueKey(1)),
-  MakeCup(type: CupType.empty, key: ValueKey(2)),
-  // MakeCup(type: CupType.empty, key: ValueKey(3)),
-  // MakeCup(type: CupType.empty, key: ValueKey(4)),
-  // MakeCup(type: CupType.empty, key: ValueKey(5)),
-  // MakeCup(type: CupType.gift, key: ValueKey(6)),
-];
+// List<MakeCup> makeCupList = [
+//   MakeCup(type: CupType.full, key: ValueKey(1)),
+//   MakeCup(type: CupType.empty, key: ValueKey(2)),
+//   // MakeCup(type: CupType.empty, key: ValueKey(3)),
+//   // MakeCup(type: CupType.empty, key: ValueKey(4)),
+//   // MakeCup(type: CupType.empty, key: ValueKey(5)),
+//   // MakeCup(type: CupType.gift, key: ValueKey(6)),
+// ];
 
-List<AnimationController> makeCupAnimeList = [];
+CupRepository repository = CupRepository();
+LocalDataSource localDatasource = LocalDataSource();
+
+List<Widget> makeCupList = repository.getItems().map((cup) {
+  return AnimeCup(cup: getCup(cup.typeCup), key: UniqueKey());
+}).toList();
+
 List<Function> makeCupAnimeFunctionList = [];
 
-// List<GlobalKey> myGlobalKeyList = [];
-
-class CardPageAnime2 extends StatefulWidget {
+class CardPageAnime3 extends StatefulWidget {
   @override
-  _CardPageAnime2State createState() => _CardPageAnime2State();
+  _CardPageAnime3State createState() => _CardPageAnime3State();
 }
 
-class _CardPageAnime2State extends State<CardPageAnime2> {
+class _CardPageAnime3State extends State<CardPageAnime3> {
   @override
   Widget build(BuildContext context) {
     // ColorBloc _bloc = BlocProvider.of<ColorBloc>(context);
@@ -38,6 +44,19 @@ class _CardPageAnime2State extends State<CardPageAnime2> {
         makeCupAnimeFunctionList[0](1);
         // makeCupAnimeFunctionList[0].call();
 
+        // print(repository.getItems());
+        // print("----------------------------");
+        // print(localDatasource.getCupList());
+
+        // List<Widget> makeCupList = repository.getItems().map((cup) {
+        //   return AnimeCup(cup: getCup(cup.typeCup), key: UniqueKey());
+        // }).toList();
+        //
+        // print("----------------------------");
+        // print(mapType['empty']);
+        // print("----------------------------");
+        // print(makeCupList);
+
         print("FloatingActionButton 2");
       }),
       body: SafeArea(
@@ -45,101 +64,99 @@ class _CardPageAnime2State extends State<CardPageAnime2> {
           color: DefaultCustomTheme.kWelcomePageBackground,
           width: double.infinity,
           padding: EdgeInsets.all(10),
-          child: ListView(
-            children: [
-              // MakeCup(type: CupType.full, key: ValueKey(1)),
-              // MakeCup(type: CupType.empty, key: ValueKey(2)),
-              ...makeCupList.map<AnimeCup>((cup) {
-                return AnimeCup(cup: cup, key: UniqueKey());
-              }),
-            ],
-          ),
+          // child: Container(),
+          child: ListView(children: makeCupList),
         ),
       ),
     );
   }
 }
 
-class MakeCup extends StatefulWidget {
-  final CupType type;
+Map<String, IconData> mapType = {
+  'empty': Icons.free_breakfast_outlined,
+  'full': Icons.free_breakfast_rounded,
+  'gift': Icons.free_breakfast_sharp
+};
 
-  MakeCup({
-    this.type,
-    key,
-  }) : super(key: key);
-
-  @override
-  _MakeCupState createState() => _MakeCupState();
+Widget getCup(String cupType) {
+  return Icon(
+    mapType[cupType],
+    color: DefaultCustomTheme.kLogoColor,
+    size: 180,
+    key: UniqueKey(),
+  );
 }
 
-class _MakeCupState extends State<MakeCup> {
-  final double _iconSize = 180;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget _getEmptyCup() {
-      return Icon(
-        Icons.free_breakfast_outlined,
-        color: DefaultCustomTheme.kLogoColor,
-        size: _iconSize,
-        key: UniqueKey(),
-      );
-    }
-
-    Widget _getFullCup() {
-      return Icon(
-        Icons.free_breakfast_rounded,
-        color: DefaultCustomTheme.kLogoColor,
-        size: _iconSize,
-        key: UniqueKey(),
-      );
-    }
-
-    Widget _getGiftCup() {
-      return Icon(
-        Icons.free_breakfast_sharp,
-        color: DefaultCustomTheme.kLogoColor,
-        size: _iconSize,
-        key: UniqueKey(),
-      );
-    }
-
-    Widget cup;
-
-    switch (widget.type) {
-      case CupType.empty:
-        cup = _getEmptyCup();
-        break;
-      case CupType.full:
-        cup = _getFullCup();
-        break;
-      case CupType.gift:
-        cup = _getGiftCup();
-        break;
-      default:
-        cup = _getEmptyCup();
-    }
-    return cup;
-    // Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
-    //
-    // return TweenAnimationBuilder(
-    //     tween: _scaleTween,
-    //     duration: Duration(milliseconds: 800),
-    //     builder: (context, scale, child) {
-    //       return Transform.scale(
-    //         scale: scale,
-    //         child: child,
-    //       );
-    //     },
-    //     child: cup);
-  }
-}
+// class MakeCup extends StatefulWidget {
+//   final CupType type;
+//
+//   MakeCup({
+//     this.type,
+//     key,
+//   }) : super(key: key);
+//
+//   @override
+//   _MakeCupState createState() => _MakeCupState();
+// }
+//
+// class _MakeCupState extends State<MakeCup> {
+//   final double _iconSize = 180;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     Widget _getEmptyCup() {
+//       return Icon(
+//         Icons.free_breakfast_outlined,
+//         color: DefaultCustomTheme.kLogoColor,
+//         size: _iconSize,
+//         key: UniqueKey(),
+//       );
+//     }
+//
+//     Widget _getFullCup() {
+//       return Icon(
+//         Icons.free_breakfast_rounded,
+//         color: DefaultCustomTheme.kLogoColor,
+//         size: _iconSize,
+//         key: UniqueKey(),
+//       );
+//     }
+//
+//     Widget _getGiftCup() {
+//       return Icon(
+//         Icons.free_breakfast_sharp,
+//         color: DefaultCustomTheme.kLogoColor,
+//         size: _iconSize,
+//         key: UniqueKey(),
+//       );
+//     }
+//
+//     Widget cup;
+//
+//     switch (widget.type) {
+//       case CupType.empty:
+//         cup = _getEmptyCup();
+//         break;
+//       case CupType.full:
+//         cup = _getFullCup();
+//         break;
+//       case CupType.gift:
+//         cup = _getGiftCup();
+//         break;
+//       default:
+//         cup = _getEmptyCup();
+//     }
+//     return cup;
+//   }
+// }
 
 class AnimeCup extends StatefulWidget {
+  // final IconData cup;
   final Widget cup;
-  final Function onTap;
+  // final Function onTap;
 
-  AnimeCup({this.cup, this.onTap, key}) : super(key: key);
+  // AnimeCup({this.cup, this.onTap, key}) : super(key: key);
+  AnimeCup({this.cup, key}) : super(key: key);
 
   @override
   _AnimeCupState createState() => _AnimeCupState();
@@ -163,7 +180,7 @@ class _AnimeCupState extends State<AnimeCup>
       _controller.forward(from: 0.0);
     });
 
-    makeCupAnimeList.add(_controller);
+    // makeCupAnimeList.add(_controller);
 
     // TODO: implement initState
     super.initState();

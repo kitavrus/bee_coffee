@@ -12,8 +12,5 @@ class ColorBloc extends Bloc<ColorEvent, Color> {
   Stream<Color> mapEventToState(ColorEvent event) async* {
     _color = (event == ColorEvent.event_red) ? Colors.red : Colors.green;
     yield _color;
-
-    // TODO: implement mapEventToState
-    // throw UnimplementedError();
   }
 }

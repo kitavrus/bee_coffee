@@ -2,43 +2,38 @@ import 'package:bee_coffee/color_bloc.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter/animation.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 
 List<MakeCup> makeCupList = [
   MakeCup(type: CupType.full, key: ValueKey(1)),
   MakeCup(type: CupType.empty, key: ValueKey(2)),
-  // MakeCup(type: CupType.empty, key: ValueKey(3)),
-  // MakeCup(type: CupType.empty, key: ValueKey(4)),
-  // MakeCup(type: CupType.empty, key: ValueKey(5)),
-  // MakeCup(type: CupType.gift, key: ValueKey(6)),
+  MakeCup(type: CupType.gift, key: ValueKey(6)),
 ];
 
 List<AnimationController> makeCupAnimeList = [];
 List<Function> makeCupAnimeFunctionList = [];
 
-// List<GlobalKey> myGlobalKeyList = [];
-
-class CardPageAnime2 extends StatefulWidget {
+class CardPageBloc extends StatefulWidget {
   @override
-  _CardPageAnime2State createState() => _CardPageAnime2State();
+  _CardPageBlocState createState() => _CardPageBlocState();
 }
 
-class _CardPageAnime2State extends State<CardPageAnime2> {
+class _CardPageBlocState extends State<CardPageBloc> {
   @override
   Widget build(BuildContext context) {
-    // ColorBloc _bloc = BlocProvider.of<ColorBloc>(context);
+    ColorBloc _bloc = BlocProvider.of<ColorBloc>(context);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        // print(makeCupList[1].hashCode);
-        // makeCupAnimeList[0].forward(from: 0);
-        // makeCupAnimeList[1].forward(from: 0);
-
-        makeCupAnimeFunctionList[0](1);
+        // makeCupAnimeFunctionList[0](Colors.red);
         // makeCupAnimeFunctionList[0].call();
 
-        print("FloatingActionButton 2");
+        _bloc.add(ColorEvent.event_green);
+
+        print("FloatingActionButton");
       }),
       body: SafeArea(
         child: Container(
@@ -47,10 +42,11 @@ class _CardPageAnime2State extends State<CardPageAnime2> {
           padding: EdgeInsets.all(10),
           child: ListView(
             children: [
-              // MakeCup(type: CupType.full, key: ValueKey(1)),
-              // MakeCup(type: CupType.empty, key: ValueKey(2)),
               ...makeCupList.map<AnimeCup>((cup) {
-                return AnimeCup(cup: cup, key: UniqueKey());
+                return AnimeCup(
+                  cup: cup,
+                  key: UniqueKey(),
+                );
               }),
             ],
           ),
@@ -58,6 +54,147 @@ class _CardPageAnime2State extends State<CardPageAnime2> {
       ),
     );
   }
+}
+
+class AnimeCup extends StatefulWidget {
+  final Widget cup;
+  final Function onTap;
+
+  AnimeCup({this.cup, this.onTap, key}) : super(key: key);
+
+  @override
+  _AnimeCupState createState() => _AnimeCupState();
+}
+
+class _AnimeCupState extends State<AnimeCup>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+
+  Color _color; // = Colors.red;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+        vsync: this,
+        lowerBound: 0,
+        upperBound: 1,
+        duration: Duration(milliseconds: 800));
+
+    Future.delayed(Duration(milliseconds: 2000), () {
+      _controller.forward(from: 0.0);
+    });
+
+    makeCupAnimeList.add(_controller);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Transform _transformScale(Widget child, AnimationController controller) {
+    return Transform.scale(
+      scale: controller.value,
+      child: child,
+    );
+  }
+
+  Transform _transformRotate(Widget child, AnimationController controller) {
+    return Transform.rotate(
+      angle: -math.pi / 3.14 + controller.value,
+      child: child,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    void getF(Color color) {
+      setState(() {
+        _color = color;
+        _controller.forward(from: 0.0);
+      });
+    }
+
+    // makeCupAnimeFunctionList.add(getF);
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _controller.forward(from: 0.0);
+        });
+      },
+      child: AnimatedBuilder(
+          animation: _controller,
+          builder: (BuildContext _, child) {
+            return _color == Colors.red
+                ? _transformScale(child, _controller)
+                : _transformRotate(child, _controller);
+          },
+          child: widget.cup),
+    );
+
+    // return BlocBuilder(
+    //   builder: (context, currentColor) => InkWell(
+    //     onTap: () {
+    //       setState(() {
+    //         _controller.forward(from: 0.0);
+    //       });
+    //     },
+    //     child: AnimatedBuilder(
+    //         animation: _controller,
+    //         builder: (BuildContext _, child) {
+    //           return _color == Colors.red
+    //               ? _transformScale(child, _controller)
+    //               : _transformRotate(child, _controller);
+    //         },
+    //         child: widget.cup),
+    //   ),
+    // );
+
+    // return InkWell(
+    //   onTap: () {
+    //     setState(() {
+    //       _controller.forward(from: 0.0);
+    //     });
+    //   },
+    //   child: AnimatedBuilder(
+    //       animation: _controller,
+    //       builder: (BuildContext _, child) {
+    //         return Transform.rotate(
+    //           angle: -math.pi / 3.14 + _controller.value,
+    //           child: Transform.scale(
+    //             scale: _controller.value,
+    //             child: child,
+    //           ),
+    //         );
+    //       },
+    //       child: widget.cup),
+    // );
+  }
+
+  // Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
+  // return TweenAnimationBuilder(
+  //       tween: _scaleTween,
+  //       duration: Duration(milliseconds: 800),
+  //       builder: (context, scale, child) {
+  //         return Transform.scale(
+  //           scale: scale,
+  //           child: child,
+  //         );
+  //       },
+  //       child: widget.cup);
+  // }
+
+}
+
+enum CupType {
+  empty,
+  full,
+  gift,
 }
 
 class MakeCup extends StatefulWidget {
@@ -73,6 +210,14 @@ class MakeCup extends StatefulWidget {
 }
 
 class _MakeCupState extends State<MakeCup> {
+// class MakeCup extends StatelessWidget {
+//   final CupType type;
+//
+//   MakeCup({
+//     this.type,
+//     key,
+//   }) : super(key: key);
+
   final double _iconSize = 180;
 
   @override
@@ -133,127 +278,4 @@ class _MakeCupState extends State<MakeCup> {
     //     },
     //     child: cup);
   }
-}
-
-class AnimeCup extends StatefulWidget {
-  final Widget cup;
-  final Function onTap;
-
-  AnimeCup({this.cup, this.onTap, key}) : super(key: key);
-
-  @override
-  _AnimeCupState createState() => _AnimeCupState();
-}
-
-class _AnimeCupState extends State<AnimeCup>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-
-  int _color = 0;
-
-  @override
-  void initState() {
-    _controller = AnimationController(
-        vsync: this,
-        lowerBound: 0,
-        upperBound: 1,
-        duration: Duration(milliseconds: 800));
-
-    Future.delayed(Duration(milliseconds: 2000), () {
-      _controller.forward(from: 0.0);
-    });
-
-    makeCupAnimeList.add(_controller);
-
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void getF(int color) {
-    setState(() {
-      _color = color;
-      _controller.forward(from: 0.0);
-    });
-  }
-
-  Transform _transformScale(Widget child, AnimationController controller) {
-    return Transform.scale(
-      scale: controller.value,
-      child: child,
-    );
-  }
-
-  Transform _transformRotate(Widget child, AnimationController controller) {
-    return Transform.rotate(
-      angle: -math.pi / 3.14 + controller.value,
-      child: child,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    makeCupAnimeFunctionList.add(getF);
-
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _controller.forward(from: 0.0);
-        });
-      },
-      child: AnimatedBuilder(
-          animation: _controller,
-          builder: (BuildContext _, child) {
-            return _color == 0
-                ? _transformScale(child, _controller)
-                : _transformRotate(child, _controller);
-          },
-          child: widget.cup),
-    );
-
-    // return InkWell(
-    //   onTap: () {
-    //     setState(() {
-    //       _controller.forward(from: 0.0);
-    //     });
-    //   },
-    //   child: AnimatedBuilder(
-    //       animation: _controller,
-    //       builder: (BuildContext _, child) {
-    //         return Transform.rotate(
-    //           angle: -math.pi / 3.14 + _controller.value,
-    //           child: Transform.scale(
-    //             scale: _controller.value,
-    //             child: child,
-    //           ),
-    //         );
-    //       },
-    //       child: widget.cup),
-    // );
-  }
-
-  // Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
-  // return TweenAnimationBuilder(
-  //       tween: _scaleTween,
-  //       duration: Duration(milliseconds: 800),
-  //       builder: (context, scale, child) {
-  //         return Transform.scale(
-  //           scale: scale,
-  //           child: child,
-  //         );
-  //       },
-  //       child: widget.cup);
-  // }
-
-}
-
-enum CupType {
-  empty,
-  full,
-  gift,
 }
