@@ -5,24 +5,21 @@ class CupModel extends Equatable {
   final int id;
   final String status;
   final String typeCup;
-  final int qty;
 
   CupModel({
     @required this.id,
     @required this.status,
     @required this.typeCup,
-    @required this.qty,
   });
 
   @override
-  List<Object> get props => [id, status, typeCup, qty];
+  List<Object> get props => [id, status, typeCup];
 
   factory CupModel.fromJson(Map<String, dynamic> json) {
     return CupModel(
       id: json['id'],
       status: json['status'],
       typeCup: json['typeCup'],
-      qty: json['qty'],
     );
   }
 
@@ -31,7 +28,6 @@ class CupModel extends Equatable {
       'id': id,
       'status': status,
       'typeCup': typeCup,
-      'qty': qty,
     };
   }
 }
