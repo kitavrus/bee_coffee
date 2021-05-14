@@ -162,7 +162,6 @@ class Flyer extends StatelessWidget {
         child: Wrap(
           direction: Axis.horizontal,
           spacing: 1,
-          // alignment: WrapAlignment.center,
           alignment: WrapAlignment.spaceAround,
           children: [
             ...cupList,
