@@ -57,6 +57,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MyDataProv()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Bee Coffee Demo',
         theme: ThemeData.dark(),
         home: CardPageAnime4(),

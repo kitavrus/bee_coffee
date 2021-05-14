@@ -2,57 +2,39 @@ import 'package:bee_coffee/models/cup_model.dart';
 
 class LocalDataSource {
   List<List<CupModel>> getCupList() {
-    // List<int> a = [1, 2, 3];
-    // List<int> b = [4, 5];
-    // List<int> c = [6];
-    // List<List<int>> list = [
-    //   [1, 2, 3],
-    //   b,
-    //   c
-    // ];
-    //
-    // print(list);
-
     List<CupModel> flyer1 = [
-      CupModel(id: 1, status: _getRandomStatus(), typeCup: 'empty'),
-      CupModel(id: 2, status: _getRandomStatus(), typeCup: 'empty'),
-      CupModel(id: 3, status: 'start', typeCup: _getRandomTypeCup()),
-      CupModel(id: 4, status: 'start', typeCup: _getRandomTypeCup()),
-      CupModel(id: 5, status: 'start', typeCup: 'empty'),
+      CupModel(id: 1, status: _getRandomStatus(), typeCup: _getRandomTypeCup()),
+      CupModel(id: 2, status: _getRandomStatus(), typeCup: _getRandomTypeCup()),
+      CupModel(id: 3, status: _getRandomStatus(), typeCup: _getRandomTypeCup()),
+      CupModel(id: 4, status: _getRandomStatus(), typeCup: _getRandomTypeCup()),
+      CupModel(id: 5, status: _getRandomStatus(), typeCup: _getRandomTypeCup()),
       CupModel(id: 6, status: 'start', typeCup: 'gift'),
     ];
 
     List<CupModel> flyer2 = [
-      CupModel(id: 1, status: _getRandomStatus(), typeCup: 'empty'),
-      CupModel(id: 2, status: _getRandomStatus(), typeCup: 'empty'),
-      CupModel(id: 3, status: 'start', typeCup: _getRandomTypeCup()),
-      CupModel(id: 4, status: 'start', typeCup: _getRandomTypeCup()),
-      CupModel(id: 5, status: 'start', typeCup: 'empty'),
-      CupModel(id: 6, status: 'start', typeCup: 'gift'),
+      CupModel(id: 7, status: 'static', typeCup: 'full'),
+      CupModel(id: 8, status: 'static', typeCup: 'full'),
+      CupModel(id: 9, status: 'static', typeCup: 'full'),
+      CupModel(id: 10, status: 'static', typeCup: 'full'),
+      CupModel(id: 11, status: 'static', typeCup: 'full'),
+      CupModel(id: 12, status: 'static', typeCup: 'gift'),
     ];
 
-    List<List<CupModel>> list = [flyer1, flyer2];
-    // List<List<CupModel>> list = [];
-    // list.add(flyer1);
-    // list.add(flyer2);
+    List<CupModel> flyer3 = [
+      CupModel(id: 13, status: 'static', typeCup: 'full'),
+      CupModel(id: 14, status: 'static', typeCup: 'full'),
+      CupModel(id: 15, status: 'static', typeCup: 'full'),
+      CupModel(id: 16, status: 'static', typeCup: 'full'),
+      CupModel(id: 17, status: 'static', typeCup: 'full'),
+      CupModel(id: 18, status: 'static', typeCup: 'gift'),
+    ];
 
-    // print(list);
-    // print("-----------------");
-
+    List<List<CupModel>> list = [flyer1, flyer2, flyer3];
     return list;
-
-    // return [
-    //   CupModel(id: 1, status: _getRandomStatus(), typeCup: 'empty'),
-    //   CupModel(id: 2, status: _getRandomStatus(), typeCup: 'empty'),
-    //   CupModel(id: 3, status: 'start', typeCup: _getRandomTypeCup()),
-    //   CupModel(id: 4, status: 'start', typeCup: _getRandomTypeCup()),
-    //   CupModel(id: 5, status: 'start', typeCup: 'empty'),
-    //   CupModel(id: 6, status: 'start', typeCup: 'gift'),
-    // ];
   }
 
   String _getRandomStatus() {
-    return (['start', 'change']..shuffle()).first;
+    return (['start', 'change', 'static']..shuffle()).first;
 
     // final list = ['start', 'change'];
     // final _random = Random();
@@ -60,6 +42,7 @@ class LocalDataSource {
   }
 
   String _getRandomTypeCup() {
-    return (['empty', 'full', 'gift']..shuffle()).first;
+    return (['empty', 'full']..shuffle()).first;
+    // return (['empty', 'full', 'gift']..shuffle()).first;
   }
 }

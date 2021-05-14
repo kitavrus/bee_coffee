@@ -7,20 +7,42 @@ import 'dart:math' as math;
 import 'package:provider/provider.dart';
 
 class CardPageAnime4 extends StatelessWidget {
+  Widget _getCup(String cupType, int id) {
+    Map<String, IconData> mapType = {
+      'empty': Icons.free_breakfast_outlined,
+      'full': Icons.free_breakfast_rounded,
+      'gift': Icons.free_breakfast_sharp
+    };
+
+    return Icon(
+      mapType[cupType],
+      color: cupType == 'gift'
+          ? DefaultCustomTheme.kGiftCapColor
+          : DefaultCustomTheme.kLogoColor,
+      size: 130,
+      key: ValueKey(id),
+      // key: UniqueKey(),
+    );
+  }
+
+  Widget _makeFlyers(int index, List<List<CupModel>> cupList) {
+    List<Widget> makeCupList = cupList[index].map((cup) {
+      return AnimeCup(
+          cup: _getCup(cup.typeCup, cup.id),
+          cupStatus: cup.status,
+          key: UniqueKey());
+    }).toList();
+
+    return Flyer(
+        cupList: makeCupList, enterCode: index == 0 ? EnterCode() : null);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // List<List<CupModel>> cupList = context.watch<MyDataProv>().getData();
     List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
-    // MyDataProv data = context.watch<MyDataProv>().getData;
-    // MyDataProv data = context.watch<MyDataProv>();
-    // List<List<CupModel>> cupList = data.getData;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        // setState(() {
-        //   _updateListView();
-        // });
-
         context.read<MyDataProv>().changeData("OK");
       }),
       body: SafeArea(
@@ -29,19 +51,9 @@ class CardPageAnime4 extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.all(10),
           child: ListView.builder(
-            // itemCount: makeCupList.length,
             itemCount: cupList.length,
             itemBuilder: (context, index) {
-              List<Widget> makeCupList = cupList[index].map((cup) {
-                return AnimeCup(
-                    cup: getCup(cup.typeCup, cup.id),
-                    cupStatus: cup.status,
-                    key: UniqueKey());
-              }).toList();
-
-              return Flyer(
-                  cupList: makeCupList,
-                  enterCode: index == 0 ? EnterCode() : null);
+              return _makeFlyers(index, cupList);
             },
           ),
         ),
@@ -72,11 +84,11 @@ class _AnimeCupState extends State<AnimeCup>
         upperBound: 1,
         duration: Duration(milliseconds: 800));
 
-    Future.delayed(Duration(milliseconds: 1000), () {
-      _controller.forward(from: 0.0);
-    });
+    // Future.delayed(Duration(milliseconds: 1000), () {
+    //   _controller.forward(from: 0.0);
+    // });
 
-    // makeCupAnimeList.add(_controller);
+    _controller.forward(from: 0.0);
 
     // TODO: implement initState
     super.initState();
@@ -87,12 +99,6 @@ class _AnimeCupState extends State<AnimeCup>
     _controller.dispose();
     super.dispose();
   }
-
-  // void getF(int color) {
-  //   setState(() {
-  //     _controller.forward(from: 0.0);
-  //   });
-  // }
 
   Transform _transformScale(Widget child, AnimationController controller) {
     return Transform.scale(
@@ -108,25 +114,31 @@ class _AnimeCupState extends State<AnimeCup>
     );
   }
 
+  Widget _animeNotAnime(Widget cup, String status) {
+    // 'start', 'change'
+    if (status == "static") {
+      return cup;
+    }
+
+    return AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext _, child) {
+          return widget.cupStatus == 'start'
+              ? _transformScale(child, _controller)
+              : _transformRotate(child, _controller);
+        },
+        child: cup);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // makeCupAnimeFunctionList.add(getF);
-
     return InkWell(
-      onTap: () {
-        setState(() {
-          _controller.forward(from: 0.0);
-        });
-      },
-      child: AnimatedBuilder(
-          animation: _controller,
-          builder: (BuildContext _, child) {
-            return widget.cupStatus == 'start'
-                ? _transformScale(child, _controller)
-                : _transformRotate(child, _controller);
-          },
-          child: widget.cup),
-    );
+        onTap: () {
+          setState(() {
+            _controller.forward(from: 0.0);
+          });
+        },
+        child: _animeNotAnime(widget.cup, widget.cupStatus));
   }
 }
 
@@ -271,20 +283,4 @@ class EnterCode extends StatelessWidget {
       SizedBox(height: 25),
     ]);
   }
-}
-
-Widget getCup(String cupType, int id) {
-  Map<String, IconData> mapType = {
-    'empty': Icons.free_breakfast_outlined,
-    'full': Icons.free_breakfast_rounded,
-    'gift': Icons.free_breakfast_sharp
-  };
-
-  return Icon(
-    mapType[cupType],
-    color: DefaultCustomTheme.kLogoColor,
-    size: 130,
-    key: ValueKey(id),
-    // key: UniqueKey(),
-  );
 }
