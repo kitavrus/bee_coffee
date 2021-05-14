@@ -1,38 +1,27 @@
 import 'package:bee_coffee/models/cup_model.dart';
+import 'package:bee_coffee/my_data_prov.dart';
 import 'package:bee_coffee/repository/cup_repository.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:provider/provider.dart';
 
-class CardPageAnime3 extends StatefulWidget {
-  @override
-  _CardPageAnime3State createState() => _CardPageAnime3State();
-}
-
-class _CardPageAnime3State extends State<CardPageAnime3> {
-  List<Widget> makeCupList;
-  List<List<CupModel>> cupList;
-
-  final CupRepository _repository = CupRepository();
-
-  void _updateListView() {
-    cupList = _repository.getItems();
-  }
-
-  @override
-  void initState() {
-    _updateListView();
-    // TODO: implement initState
-    super.initState();
-  }
-
+class CardPageAnime4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // List<List<CupModel>> cupList = context.watch<MyDataProv>().getData();
+    List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
+    // MyDataProv data = context.watch<MyDataProv>().getData;
+    // MyDataProv data = context.watch<MyDataProv>();
+    // List<List<CupModel>> cupList = data.getData;
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        setState(() {
-          _updateListView();
-        });
+        // setState(() {
+        //   _updateListView();
+        // });
+
+        context.read<MyDataProv>().changeData("OK");
       }),
       body: SafeArea(
         child: Container(
@@ -43,7 +32,7 @@ class _CardPageAnime3State extends State<CardPageAnime3> {
             // itemCount: makeCupList.length,
             itemCount: cupList.length,
             itemBuilder: (context, index) {
-              makeCupList = cupList[index].map((cup) {
+              List<Widget> makeCupList = cupList[index].map((cup) {
                 return AnimeCup(
                     cup: getCup(cup.typeCup, cup.id),
                     cupStatus: cup.status,
@@ -253,6 +242,8 @@ class EnterCode extends StatelessWidget {
                 counterText: '',
               ),
               onChanged: (value) {
+                context.read<MyDataProv>().changeData(value.toString());
+
                 final snackBar = SnackBar(
                   content: Text(
                     'Чашка успешно засчитана!',

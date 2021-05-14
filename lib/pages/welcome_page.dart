@@ -1,6 +1,4 @@
-import 'package:bee_coffee/pages/card_page.dart';
-import 'package:bee_coffee/pages/card_page_anime2.dart';
-import 'package:bee_coffee/pages/card_page_anime3.dart';
+import 'package:bee_coffee/pages/card_page_anime4.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +45,8 @@ class WelcomePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) {
                       // return CardPageBloc();
-                      return CardPageAnime3();
+                      return CardPageAnime4();
+                      // return CardPageAnime3();
                       // return CardPageAnime2();
                       // return CardPageAnime();
                       // return CardPage();
