@@ -42,9 +42,9 @@ class CardPageAnime4 extends StatelessWidget {
     List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        context.read<MyDataProv>().changeData("OK");
-      }),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   context.read<MyDataProv>().changeData("OK");
+      // }),
       body: SafeArea(
         child: Container(
           color: DefaultCustomTheme.kWelcomePageBackground,
@@ -196,7 +196,7 @@ class EnterCode extends StatelessWidget {
             width: 35,
             child: TextField(
               maxLength: 1,
-              // autofocus: true,
+              autofocus: true,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(

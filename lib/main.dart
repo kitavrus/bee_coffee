@@ -60,8 +60,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Bee Coffee Demo',
         theme: ThemeData.dark(),
-        home: CardPageAnime4(),
-        // home: WelcomePage(),
+        // home: CardPageAnime4(),
+        home: WelcomePage(),
       ),
     );
 
