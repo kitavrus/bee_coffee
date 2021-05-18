@@ -1,12 +1,17 @@
 import 'package:bee_coffee/models/cup_model.dart';
 import 'package:bee_coffee/my_data_prov.dart';
-import 'package:bee_coffee/repository/cup_repository.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
+import 'package:bee_coffee/pages/cup_gift_page.dart';
 
 class CardPageAnime4 extends StatelessWidget {
+
+  final String phoneNumber;
+
+  CardPageAnime4({@required this.phoneNumber});
+
   Widget _getCup(String cupType, int id) {
     Map<String, IconData> mapType = {
       'empty': Icons.free_breakfast_outlined,
@@ -14,15 +19,16 @@ class CardPageAnime4 extends StatelessWidget {
       'gift': Icons.free_breakfast_sharp
     };
 
-    return Icon(
-      mapType[cupType],
-      color: cupType == 'gift'
-          ? DefaultCustomTheme.kGiftCapColor
-          : DefaultCustomTheme.kLogoColor,
-      size: Size.fromRadius(85).width,
-      // size: double.infinity,
-      key: ValueKey(id),
-      // key: UniqueKey(),
+    return Hero(
+      tag: id,
+      child: Icon(
+        mapType[cupType],
+        color: cupType == 'gift'
+            ? DefaultCustomTheme.kGiftCapColor
+            : DefaultCustomTheme.kLogoColor,
+        size: Size.fromRadius(85).width,
+        key: ValueKey(id),
+      ),
     );
 
     // return SizedBox.fromSize(
@@ -56,6 +62,8 @@ class CardPageAnime4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
+
+    print(phoneNumber);
 
     return Scaffold(
       // floatingActionButton: FloatingActionButton(onPressed: () {
@@ -151,7 +159,10 @@ class _AnimeCupState extends State<AnimeCup>
     return InkWell(
         onTap: () {
           setState(() {
-            _controller.forward(from: 0.0);
+            
+            Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(),),);
+            
+            // _controller.forward(from: 0.0);
           });
         },
         child: _animeNotAnime(widget.cup, widget.cupStatus));
