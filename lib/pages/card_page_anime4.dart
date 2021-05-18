@@ -19,10 +19,26 @@ class CardPageAnime4 extends StatelessWidget {
       color: cupType == 'gift'
           ? DefaultCustomTheme.kGiftCapColor
           : DefaultCustomTheme.kLogoColor,
-      size: 130,
+      size: Size.fromRadius(85).width,
+      // size: double.infinity,
       key: ValueKey(id),
       // key: UniqueKey(),
     );
+
+    // return SizedBox.fromSize(
+    //   size: Size.fromRadius(90),
+    //   child: FittedBox(child: Icon(
+    //     mapType[cupType],
+    //     color: cupType == 'gift'
+    //         ? DefaultCustomTheme.kGiftCapColor
+    //         : DefaultCustomTheme.kLogoColor,
+    //     // size: 130,
+    //     // size: double.infinity,
+    //     key: ValueKey(id),
+    //     // key: UniqueKey(),
+    //   ),
+    //   ),
+    // );
   }
 
   Widget _makeFlyers(int index, List<List<CupModel>> cupList) {
@@ -127,7 +143,7 @@ class _AnimeCupState extends State<AnimeCup>
               ? _transformScale(child, _controller)
               : _transformRotate(child, _controller);
         },
-        child: cup);
+        child:  cup);
   }
 
   @override
@@ -162,7 +178,10 @@ class Flyer extends StatelessWidget {
         child: Wrap(
           direction: Axis.horizontal,
           spacing: 1,
+          runSpacing: 1,
           alignment: WrapAlignment.spaceAround,
+          // alignment: WrapAlignment.spaceBetween,
+          // alignment: WrapAlignment.spaceEvenly,
           children: [
             ...cupList,
             enterCode ?? SizedBox(height: 0, width: double.infinity),
