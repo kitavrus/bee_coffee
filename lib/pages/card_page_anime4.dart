@@ -158,12 +158,12 @@ class _AnimeCupState extends State<AnimeCup>
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          setState(() {
+          // setState(() {
             
-            Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(),),);
+            Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(phoneNumber:"XXXXXXXX"),),);
             
             // _controller.forward(from: 0.0);
-          });
+          // });
         },
         child: _animeNotAnime(widget.cup, widget.cupStatus));
   }
