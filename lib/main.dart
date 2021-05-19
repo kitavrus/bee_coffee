@@ -1,7 +1,7 @@
 import 'package:bee_coffee/color_bloc.dart';
 import 'package:bee_coffee/my_data_prov.dart';
 import 'package:bee_coffee/pages/card_page_anime.dart';
-import 'package:bee_coffee/pages/card_page_anime4.dart';
+import 'package:bee_coffee/pages/card_page.dart';
 import 'package:bee_coffee/pages/card_page_bloc.dart';
 import 'package:bee_coffee/pages/welcome_page.dart';
 import 'package:flutter/material.dart';

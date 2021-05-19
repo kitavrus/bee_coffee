@@ -50,6 +50,7 @@ class CupGiftPage extends StatelessWidget {
               // Find the ScaffoldMessenger in the widget tree
               // and use it to show a SnackBar.
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              Navigator.pop(context);
             },
             child: Text(
               "Получить подарочную чашку",

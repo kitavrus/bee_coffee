@@ -1,61 +1,99 @@
+import 'package:bee_coffee/models/cup_model.dart';
+import 'package:bee_coffee/my_data_prov.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
+import 'dart:math' as math;
+import 'package:provider/provider.dart';
+import 'package:bee_coffee/pages/cup_gift_page.dart';
 
-List<MakeCup> makeCupList = [
-  MakeCup(type: CupType.full, key: ValueKey(1)),
-  MakeCup(type: CupType.empty, key: ValueKey(2)),
-  MakeCup(type: CupType.empty, key: ValueKey(3)),
-  MakeCup(type: CupType.empty, key: ValueKey(4)),
-  MakeCup(type: CupType.empty, key: ValueKey(5)),
-  MakeCup(type: CupType.gift, key: ValueKey(6)),
-];
+class CardPage extends StatelessWidget {
 
-List<AnimationController> makeCupAnimeList = [];
+  final String phoneNumber;
 
-class CardPage extends StatefulWidget {
-  @override
-  _CardPageState createState() => _CardPageState();
-}
+  CardPage({@required this.phoneNumber});
 
-class _CardPageState extends State<CardPage> {
-  final key = GlobalKey<AnimatedListState>();
+  Widget _getCup(String cupType, int id) {
+    Map<String, IconData> mapType = {
+      'empty': Icons.free_breakfast_outlined,
+      'full': Icons.free_breakfast_rounded,
+      'gift': Icons.free_breakfast_sharp
+    };
+
+    if(cupType == 'gift') {
+      return Hero(
+        tag: id,
+        child: Icon(
+          mapType[cupType],
+          color: cupType == 'gift'
+              ? DefaultCustomTheme.kGiftCapColor
+              : DefaultCustomTheme.kLogoColor,
+          size: Size.fromRadius(85).width,
+          key: ValueKey(id),
+        ),
+      );
+    }
+
+    return Icon(
+      mapType[cupType],
+      color: cupType == 'gift'
+          ? DefaultCustomTheme.kGiftCapColor
+          : DefaultCustomTheme.kLogoColor,
+      size: Size.fromRadius(85).width,
+      key: ValueKey(id),
+    );
+
+    // return SizedBox.fromSize(
+    //   size: Size.fromRadius(90),
+    //   child: FittedBox(child: Icon(
+    //     mapType[cupType],
+    //     color: cupType == 'gift'
+    //         ? DefaultCustomTheme.kGiftCapColor
+    //         : DefaultCustomTheme.kLogoColor,
+    //     // size: 130,
+    //     // size: double.infinity,
+    //     key: ValueKey(id),
+    //     // key: UniqueKey(),
+    //   ),
+    //   ),
+    // );
+  }
+
+  Widget _makeFlyers(int index, List<List<CupModel>> cupList) {
+    List<Widget> makeCupList = cupList[index].map((cup) {
+      return AnimeCup(
+          cup: _getCup(cup.typeCup, cup.id),
+          cupStatus: cup.status,
+          typeCup: cup.typeCup,
+          phoneNumber: phoneNumber,
+          key: UniqueKey());
+    }).toList();
+
+    return Flyer(
+        cupList: makeCupList,
+        enterCode: index == 0 ? EnterCode() : null
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
+
+    // print(phoneNumber);
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        // print(makeCupList[1].hashCode);
-        makeCupAnimeList[0].forward(from: 0);
-        // makeCupAnimeList[1].forward(from: 0);
-        print("FloatingActionButton");
-
-        // Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
-        // TweenAnimationBuilder(
-        //     tween: _scaleTween,
-        //     duration: Duration(milliseconds: 800),
-        //     builder: (context, scale, child) {
-        //       return Transform.scale(
-        //         scale: scale,
-        //         child: child,
-        //       );
-        //     },
-        //     child: makeCupList[1]);
-
-        print("FloatingActionButton");
-      }),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   context.read<MyDataProv>().changeData("OK");
+      // }),
       body: SafeArea(
         child: Container(
           color: DefaultCustomTheme.kWelcomePageBackground,
           width: double.infinity,
           padding: EdgeInsets.all(10),
-          child: ListView(
-            children: [
-              Flyer(enterCode: EnterCode()),
-              // Flyer(),
-              // Flyer(),
-            ],
+          child: ListView.builder(
+            itemCount: cupList.length,
+            itemBuilder: (context, index) {
+              return _makeFlyers(index, cupList);
+            },
           ),
         ),
       ),
@@ -63,10 +101,97 @@ class _CardPageState extends State<CardPage> {
   }
 }
 
+class AnimeCup extends StatefulWidget {
+  final Widget cup;
+  final String cupStatus;
+  final String phoneNumber;
+  final String typeCup;
+
+  AnimeCup({this.cup, key, this.cupStatus,this.typeCup, this.phoneNumber}) : super(key: key);
+
+  @override
+  _AnimeCupState createState() => _AnimeCupState();
+}
+
+class _AnimeCupState extends State<AnimeCup>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+        vsync: this,
+        lowerBound: 0,
+        upperBound: 1,
+        duration: Duration(milliseconds: 800));
+
+    // Future.delayed(Duration(milliseconds: 1000), () {
+    //   _controller.forward(from: 0.0);
+    // });
+
+    _controller.forward(from: 0.0);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Transform _transformScale(Widget child, AnimationController controller) {
+    return Transform.scale(
+      scale: controller.value,
+      child: child,
+    );
+  }
+
+  Transform _transformRotate(Widget child, AnimationController controller) {
+    return Transform.rotate(
+      angle: -math.pi / 3.14 + controller.value,
+      child: child,
+    );
+  }
+
+  Widget _animeNotAnime(Widget cup, String status) {
+    // 'start', 'change'
+    if (status == "static") {
+      return cup;
+    }
+
+    return AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext _, child) {
+          return widget.cupStatus == 'start'
+              ? _transformScale(child, _controller)
+              : _transformRotate(child, _controller);
+        },
+        child:  cup);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () {
+          if(widget.typeCup == 'gift') {
+            Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(phoneNumber:widget.phoneNumber),),);
+          }
+          // setState(() {
+            // _controller.forward(from: 0.0);
+          // });
+        },
+        child: _animeNotAnime(widget.cup, widget.cupStatus));
+  }
+}
+
 class Flyer extends StatelessWidget {
   final Widget enterCode;
+  final List<Widget> cupList;
 
   Flyer({
+    this.cupList,
     this.enterCode,
   });
 
@@ -81,178 +206,18 @@ class Flyer extends StatelessWidget {
         child: Wrap(
           direction: Axis.horizontal,
           spacing: 1,
-          alignment: WrapAlignment.center,
+          runSpacing: 1,
+          alignment: WrapAlignment.spaceAround,
+          // alignment: WrapAlignment.spaceBetween,
+          // alignment: WrapAlignment.spaceEvenly,
           children: [
-            ...makeCupList.map<AnimeCup>((cup) {
-              print(cup.hashCode);
-              return AnimeCup(cup: cup, key: UniqueKey());
-            }),
-            // enterCode ?? SizedBox(height: 0, width: 0)
+            ...cupList,
+            enterCode ?? SizedBox(height: 0, width: double.infinity),
           ],
         ),
       ),
     );
   }
-}
-
-enum CupType {
-  empty,
-  full,
-  gift,
-}
-
-class MakeCup extends StatefulWidget {
-  final CupType type;
-
-  MakeCup({
-    this.type,
-    key,
-  }) : super(key: key);
-
-  @override
-  _MakeCupState createState() => _MakeCupState();
-}
-
-class _MakeCupState extends State<MakeCup> {
-  final double _iconSize = 180;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget _getEmptyCup() {
-      return Icon(
-        Icons.free_breakfast_outlined,
-        color: DefaultCustomTheme.kLogoColor,
-        size: _iconSize,
-        key: UniqueKey(),
-      );
-    }
-
-    Widget _getFullCup() {
-      return Icon(
-        Icons.free_breakfast_rounded,
-        color: DefaultCustomTheme.kLogoColor,
-        size: _iconSize,
-        key: UniqueKey(),
-      );
-    }
-
-    Widget _getGiftCup() {
-      return Icon(
-        Icons.free_breakfast_sharp,
-        color: DefaultCustomTheme.kLogoColor,
-        size: _iconSize,
-        key: UniqueKey(),
-      );
-    }
-
-    Widget cup;
-
-    switch (widget.type) {
-      case CupType.empty:
-        cup = _getEmptyCup();
-        break;
-      case CupType.full:
-        cup = _getFullCup();
-        break;
-      case CupType.gift:
-        cup = _getGiftCup();
-        break;
-      default:
-        cup = _getEmptyCup();
-    }
-    return cup;
-
-    // return TweenAnimationBuilder(
-    //     tween: _scaleTween,
-    //     duration: Duration(milliseconds: 800),
-    //     builder: (context, scale, child) {
-    //       return Transform.scale(
-    //         scale: scale,
-    //         child: child,
-    //       );
-    //     },
-    //     child: cup);
-  }
-}
-
-class AnimeCup extends StatefulWidget {
-  final Widget cup;
-
-  AnimeCup({this.cup, key}) : super(key: key);
-
-  @override
-  _AnimeCupState createState() => _AnimeCupState();
-}
-
-class _AnimeCupState extends State<AnimeCup>
-    with SingleTickerProviderStateMixin {
-  // var squareScale = 0.0;
-
-  AnimationController _controller;
-
-  @override
-  void initState() {
-    _controller = AnimationController(
-        vsync: this,
-        lowerBound: 0,
-        upperBound: 1,
-        duration: Duration(milliseconds: 800));
-    // _controller.addListener(() {
-    //   // setState(() {
-    //   //   squareScale = _controller.value;
-    //   // });
-    // });
-
-    Future.delayed(Duration(milliseconds: 2000), () {
-      _controller.forward(from: 0.0);
-    });
-
-    makeCupAnimeList.add(_controller);
-
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  // GlobalKey<AnimatorWidgetState> _key = GlobalKey<AnimatorWidgetState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // return Transform.scale(
-    //   scale: squareScale,
-    //   child: widget.cup,
-    // );
-    //
-
-    return AnimatedBuilder(
-        animation: _controller,
-        builder: (BuildContext _, child) {
-          return Transform.scale(
-            scale: _controller.value,
-            child: child,
-          );
-        },
-        child: widget.cup);
-  }
-
-  // Tween<double> _scaleTween = Tween<double>(begin: 0, end: 1);
-  // return TweenAnimationBuilder(
-  //       tween: _scaleTween,
-  //       duration: Duration(milliseconds: 800),
-  //       builder: (context, scale, child) {
-  //         return Transform.scale(
-  //           scale: scale,
-  //           child: child,
-  //         );
-  //       },
-  //       child: widget.cup);
-  // }
-
 }
 
 class EnterCode extends StatelessWidget {
@@ -278,7 +243,7 @@ class EnterCode extends StatelessWidget {
             width: 35,
             child: TextField(
               maxLength: 1,
-              // autofocus: true,
+              autofocus: true,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -335,6 +300,8 @@ class EnterCode extends StatelessWidget {
                 counterText: '',
               ),
               onChanged: (value) {
+                context.read<MyDataProv>().changeData(value.toString());
+
                 final snackBar = SnackBar(
                   content: Text(
                     'Чашка успешно засчитана!',
