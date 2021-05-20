@@ -4,7 +4,8 @@ import 'package:bee_coffee/models/cup_model.dart';
 class CupRepository {
   final LocalDataSource _cupDataSource = LocalDataSource();
 
-  List<List<CupModel>> getItems() {
+  Future<List<List<CupModel>>> getItems() async  {
+    await new Future.delayed(Duration(seconds: 2));
     return _cupDataSource.getCupList();
   }
 }

@@ -6,13 +6,18 @@ import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:bee_coffee/pages/cup_gift_page.dart';
 
-class FlyerPage extends StatelessWidget {
+class FlyerPage extends StatefulWidget {
 
   static const String routeName = "/flyers";
   final String phoneNumber;
 
   FlyerPage({@required this.phoneNumber});
 
+  @override
+  _FlyerPageState createState() => _FlyerPageState();
+}
+
+class _FlyerPageState extends State<FlyerPage> {
   Widget _getCup(String cupType, int id) {
     Map<String, IconData> mapType = {
       'empty': Icons.free_breakfast_outlined,
@@ -65,7 +70,7 @@ class FlyerPage extends StatelessWidget {
           cup: _getCup(cup.typeCup, cup.id),
           cupStatus: cup.status,
           typeCup: cup.typeCup,
-          phoneNumber: phoneNumber,
+          phoneNumber: widget.phoneNumber,
           key: UniqueKey());
     }).toList();
 
@@ -75,9 +80,31 @@ class FlyerPage extends StatelessWidget {
     );
   }
 
+  List<List<CupModel>> cupList;
+
+  // _updateCupList(BuildContext context) async {
+  _updateCupList() async {
+     cupList = await MyDataProv().getData();
+      setState(() {});
+  }
+
+  @override
+  void initState() {
+    _updateCupList();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
+
+    // _updateCupList(context);
+
+    // Future<List<List<CupModel>>> cupListF = context.watch<MyDataProv>().getData.then((value) => value);
+   // List<List<CupModel>> cupList;
+   // context.watch<MyDataProv>().getData.then((value) {
+   //   cupList = value;
+   // });
 
     // print(phoneNumber);
 
@@ -90,8 +117,9 @@ class FlyerPage extends StatelessWidget {
           color: DefaultCustomTheme.kWelcomePageBackground,
           width: double.infinity,
           padding: EdgeInsets.all(10),
-          child: ListView.builder(
-            itemCount: cupList.length,
+          child: cupList == null  ? CircularProgressIndicator() : ListView.builder(
+            // itemCount: cupList.length,
+            itemCount: cupList == null ? 0 : cupList.length,
             itemBuilder: (context, index) {
               return _makeFlyers(index, cupList);
             },
