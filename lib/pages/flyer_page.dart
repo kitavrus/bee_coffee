@@ -81,16 +81,19 @@ class _FlyerPageState extends State<FlyerPage> {
   }
 
   List<List<CupModel>> cupList;
+  _updateCupList(BuildContext context) async {
 
-  // _updateCupList(BuildContext context) async {
-  _updateCupList() async {
-     cupList = await MyDataProv().getData();
+    if(context != null) {
+      cupList = await context.watch<MyDataProv>().getData();
+    } else {
+      cupList = await MyDataProv().getData();
       setState(() {});
+    }
   }
 
   @override
   void initState() {
-    _updateCupList();
+    _updateCupList(null);
     // TODO: implement initState
     super.initState();
   }
@@ -98,27 +101,18 @@ class _FlyerPageState extends State<FlyerPage> {
   @override
   Widget build(BuildContext context) {
 
-    // _updateCupList(context);
-
-    // Future<List<List<CupModel>>> cupListF = context.watch<MyDataProv>().getData.then((value) => value);
-   // List<List<CupModel>> cupList;
-   // context.watch<MyDataProv>().getData.then((value) {
-   //   cupList = value;
-   // });
-
-    // print(phoneNumber);
+     _updateCupList(context);
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(onPressed: () {
-      //   context.read<MyDataProv>().changeData("OK");
-      // }),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        context.read<MyDataProv>().changeData("FloatingActionButton");
+      }),
       body: SafeArea(
         child: Container(
           color: DefaultCustomTheme.kWelcomePageBackground,
           width: double.infinity,
           padding: EdgeInsets.all(10),
-          child: cupList == null  ? CircularProgressIndicator() : ListView.builder(
-            // itemCount: cupList.length,
+          child: cupList == null  ? Center(child: CircularProgressIndicator()) : ListView.builder(
             itemCount: cupList == null ? 0 : cupList.length,
             itemBuilder: (context, index) {
               return _makeFlyers(index, cupList);
@@ -239,8 +233,6 @@ class Flyer extends StatelessWidget {
           spacing: 1,
           runSpacing: 1,
           alignment: WrapAlignment.spaceAround,
-          // alignment: WrapAlignment.spaceBetween,
-          // alignment: WrapAlignment.spaceEvenly,
           children: [
             ...cupList,
             enterCode ?? SizedBox(height: 0, width: double.infinity),
