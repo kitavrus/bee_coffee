@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class CupGiftPage extends StatelessWidget {
 
+  static const String routeName = "/flyers/gift_cup";
   final String phoneNumber;
 
   CupGiftPage({@required this.phoneNumber});

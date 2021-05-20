@@ -1,10 +1,12 @@
-import 'package:bee_coffee/pages/card_page.dart';
+import 'package:bee_coffee/pages/flyer_page.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class WelcomePage extends StatelessWidget {
+
+  static const String routeName = "/welcome_page";
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -62,12 +64,14 @@ class WelcomePage extends StatelessWidget {
                       DefaultCustomTheme.kGiftCapColor),
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return CardPage(phoneNumber:_textEditingController.text);
-                    }),
-                  );
+                  
+                  Navigator.pushReplacementNamed(context,FlyerPage.routeName,arguments: _textEditingController.text);
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) {
+                  //     return CardPage(phoneNumber:_textEditingController.text);
+                  //   }),
+                  // );
                 },
                 child: Text(
                   "Принять участие",

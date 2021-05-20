@@ -1,58 +1,99 @@
 import 'package:bee_coffee/models/cup_model.dart';
-import 'package:bee_coffee/repository/cup_repository.dart';
+import 'package:bee_coffee/my_data_prov.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:provider/provider.dart';
+import 'package:bee_coffee/pages/cup_gift_page.dart';
 
-class CardPageAnime3 extends StatefulWidget {
-  @override
-  _CardPageAnime3State createState() => _CardPageAnime3State();
-}
+class FlyerPage extends StatelessWidget {
 
-class _CardPageAnime3State extends State<CardPageAnime3> {
-  List<Widget> makeCupList;
-  List<List<CupModel>> cupList;
+  static const String routeName = "/flyers";
+  final String phoneNumber;
 
-  final CupRepository _repository = CupRepository();
+  FlyerPage({@required this.phoneNumber});
 
-  void _updateListView() {
-    cupList = _repository.getItems();
+  Widget _getCup(String cupType, int id) {
+    Map<String, IconData> mapType = {
+      'empty': Icons.free_breakfast_outlined,
+      'full': Icons.free_breakfast_rounded,
+      'gift': Icons.free_breakfast_sharp
+    };
+
+    if(cupType == 'gift') {
+      return Hero(
+        tag: id,
+        child: Icon(
+          mapType[cupType],
+          color: cupType == 'gift'
+              ? DefaultCustomTheme.kGiftCapColor
+              : DefaultCustomTheme.kLogoColor,
+          size: Size.fromRadius(85).width,
+          key: ValueKey(id),
+        ),
+      );
+    }
+
+    return Icon(
+      mapType[cupType],
+      color: cupType == 'gift'
+          ? DefaultCustomTheme.kGiftCapColor
+          : DefaultCustomTheme.kLogoColor,
+      size: Size.fromRadius(85).width,
+      key: ValueKey(id),
+    );
+
+    // return SizedBox.fromSize(
+    //   size: Size.fromRadius(90),
+    //   child: FittedBox(child: Icon(
+    //     mapType[cupType],
+    //     color: cupType == 'gift'
+    //         ? DefaultCustomTheme.kGiftCapColor
+    //         : DefaultCustomTheme.kLogoColor,
+    //     // size: 130,
+    //     // size: double.infinity,
+    //     key: ValueKey(id),
+    //     // key: UniqueKey(),
+    //   ),
+    //   ),
+    // );
   }
 
-  @override
-  void initState() {
-    _updateListView();
-    // TODO: implement initState
-    super.initState();
+  Widget _makeFlyers(int index, List<List<CupModel>> cupList) {
+    List<Widget> makeCupList = cupList[index].map((cup) {
+      return AnimeCup(
+          cup: _getCup(cup.typeCup, cup.id),
+          cupStatus: cup.status,
+          typeCup: cup.typeCup,
+          phoneNumber: phoneNumber,
+          key: UniqueKey());
+    }).toList();
+
+    return Flyer(
+        cupList: makeCupList,
+        enterCode: index == 0 ? EnterCode() : null
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    List<List<CupModel>> cupList = context.watch<MyDataProv>().getData;
+
+    // print(phoneNumber);
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        setState(() {
-          _updateListView();
-        });
-      }),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   context.read<MyDataProv>().changeData("OK");
+      // }),
       body: SafeArea(
         child: Container(
           color: DefaultCustomTheme.kWelcomePageBackground,
           width: double.infinity,
           padding: EdgeInsets.all(10),
           child: ListView.builder(
-            // itemCount: makeCupList.length,
             itemCount: cupList.length,
             itemBuilder: (context, index) {
-              makeCupList = cupList[index].map((cup) {
-                return AnimeCup(
-                    cup: getCup(cup.typeCup, cup.id),
-                    cupStatus: cup.status,
-                    key: UniqueKey());
-              }).toList();
-
-              return Flyer(
-                  cupList: makeCupList,
-                  enterCode: index == 0 ? EnterCode() : null);
+              return _makeFlyers(index, cupList);
             },
           ),
         ),
@@ -64,8 +105,10 @@ class _CardPageAnime3State extends State<CardPageAnime3> {
 class AnimeCup extends StatefulWidget {
   final Widget cup;
   final String cupStatus;
+  final String phoneNumber;
+  final String typeCup;
 
-  AnimeCup({this.cup, key, this.cupStatus}) : super(key: key);
+  AnimeCup({this.cup, key, this.cupStatus,this.typeCup, this.phoneNumber}) : super(key: key);
 
   @override
   _AnimeCupState createState() => _AnimeCupState();
@@ -83,11 +126,11 @@ class _AnimeCupState extends State<AnimeCup>
         upperBound: 1,
         duration: Duration(milliseconds: 800));
 
-    Future.delayed(Duration(milliseconds: 1000), () {
-      _controller.forward(from: 0.0);
-    });
+    // Future.delayed(Duration(milliseconds: 1000), () {
+    //   _controller.forward(from: 0.0);
+    // });
 
-    // makeCupAnimeList.add(_controller);
+    _controller.forward(from: 0.0);
 
     // TODO: implement initState
     super.initState();
@@ -98,12 +141,6 @@ class _AnimeCupState extends State<AnimeCup>
     _controller.dispose();
     super.dispose();
   }
-
-  // void getF(int color) {
-  //   setState(() {
-  //     _controller.forward(from: 0.0);
-  //   });
-  // }
 
   Transform _transformScale(Widget child, AnimationController controller) {
     return Transform.scale(
@@ -119,25 +156,36 @@ class _AnimeCupState extends State<AnimeCup>
     );
   }
 
+  Widget _animeNotAnime(Widget cup, String status) {
+    // 'start', 'change'
+    if (status == "static") {
+      return cup;
+    }
+
+    return AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext _, child) {
+          return widget.cupStatus == 'start'
+              ? _transformScale(child, _controller)
+              : _transformRotate(child, _controller);
+        },
+        child:  cup);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // makeCupAnimeFunctionList.add(getF);
-
     return InkWell(
-      onTap: () {
-        setState(() {
-          _controller.forward(from: 0.0);
-        });
-      },
-      child: AnimatedBuilder(
-          animation: _controller,
-          builder: (BuildContext _, child) {
-            return widget.cupStatus == 'start'
-                ? _transformScale(child, _controller)
-                : _transformRotate(child, _controller);
-          },
-          child: widget.cup),
-    );
+        onTap: () {
+          if(widget.typeCup == 'gift') {
+            Navigator.pushNamed(context, CupGiftPage.routeName,arguments: widget.phoneNumber);
+
+            // Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(phoneNumber:widget.phoneNumber),),);
+          }
+          // setState(() {
+            // _controller.forward(from: 0.0);
+          // });
+        },
+        child: _animeNotAnime(widget.cup, widget.cupStatus));
   }
 }
 
@@ -161,8 +209,10 @@ class Flyer extends StatelessWidget {
         child: Wrap(
           direction: Axis.horizontal,
           spacing: 1,
-          // alignment: WrapAlignment.center,
+          runSpacing: 1,
           alignment: WrapAlignment.spaceAround,
+          // alignment: WrapAlignment.spaceBetween,
+          // alignment: WrapAlignment.spaceEvenly,
           children: [
             ...cupList,
             enterCode ?? SizedBox(height: 0, width: double.infinity),
@@ -196,7 +246,7 @@ class EnterCode extends StatelessWidget {
             width: 35,
             child: TextField(
               maxLength: 1,
-              // autofocus: true,
+              autofocus: true,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -253,6 +303,8 @@ class EnterCode extends StatelessWidget {
                 counterText: '',
               ),
               onChanged: (value) {
+                context.read<MyDataProv>().changeData(value.toString());
+
                 final snackBar = SnackBar(
                   content: Text(
                     'Чашка успешно засчитана!',
@@ -280,20 +332,4 @@ class EnterCode extends StatelessWidget {
       SizedBox(height: 25),
     ]);
   }
-}
-
-Widget getCup(String cupType, int id) {
-  Map<String, IconData> mapType = {
-    'empty': Icons.free_breakfast_outlined,
-    'full': Icons.free_breakfast_rounded,
-    'gift': Icons.free_breakfast_sharp
-  };
-
-  return Icon(
-    mapType[cupType],
-    color: DefaultCustomTheme.kLogoColor,
-    size: 130,
-    key: ValueKey(id),
-    // key: UniqueKey(),
-  );
 }
