@@ -1,6 +1,7 @@
 import 'package:bee_coffee/models/cup_model.dart';
 import 'package:bee_coffee/my_data_prov.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
+import 'package:bee_coffee/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
@@ -247,11 +248,33 @@ class Flyer extends StatelessWidget {
   }
 }
 
-class EnterCode extends StatelessWidget {
+class EnterCode extends StatefulWidget {
   // const EnterCode({Key key}) : super(key: key);
 
   @override
+  _EnterCodeState createState() => _EnterCodeState();
+}
+
+class _EnterCodeState extends State<EnterCode> {
+
+
+  final _oneTextController = TextEditingController();
+  final _twoTextController = TextEditingController();
+  final _threeTextController = TextEditingController();
+  final _fourTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    _oneTextController.dispose();
+    _twoTextController.dispose();
+    _threeTextController.dispose();
+    _fourTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     final node = FocusScope.of(context);
 
     return Column(children: [
@@ -266,31 +289,43 @@ class EnterCode extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _textFiled((_) { node.nextFocus(); }),
-          _textFiled((_) { node.nextFocus(); }),
-          _textFiled((_) { node.nextFocus(); }),
-          _textFiled((value) {
-          context.read<MyDataProv>().changeData(value.toString());
+          _textFiled(_oneTextController,(value) { _onChanged(value,node); }),
+          _textFiled(_twoTextController, (value) {  _onChanged(value,node); }),
+          _textFiled(_threeTextController,(value) { _onChanged(value,node); }),
+          _textFiled(_fourTextController,(value) {
 
-          final snackBar = SnackBar(
-            content: Text(
-              'Чашка успешно засчитана!',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            action: SnackBarAction(
-              label: '',
-              onPressed: () {
-                // Some code to undo the change.
-              },
-            ),
-          );
+           String enterCodeValue =_oneTextController.text.toString()
+           + _twoTextController.text.toString()
+           + _threeTextController.text.toString()
+           + _threeTextController.text.toString();
 
-          // Find the ScaffoldMessenger in the widget tree
-          // and use it to show a SnackBar.
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            if(enterCodeValue.length < 4) {
+              showAlertDialog(context,"Ошибка","Введите 4 цифры кода");
+            } else {
+              context.read<MyDataProv>().changeData(enterCodeValue);
+            }
+
+
+
+          // final snackBar = SnackBar(
+          //   content: Text(
+          //     'Чашка успешно засчитана!',
+          //     style: TextStyle(
+          //       fontSize: 25,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   ),
+          //   action: SnackBarAction(
+          //     label: '',
+          //     onPressed: () {
+          //       // Some code to undo the change.
+          //     },
+          //   ),
+          // );
+          //
+          // // Find the ScaffoldMessenger in the widget tree
+          // // and use it to show a SnackBar.
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         },),
         ],
       ),
@@ -298,10 +333,19 @@ class EnterCode extends StatelessWidget {
     ]);
   }
 
-  Widget _textFiled( Function onChanged) {
+  void _onChanged(String value, node) {
+    if(value.isNotEmpty) {
+      node.nextFocus();
+    }
+  }
+
+
+
+  Widget _textFiled(TextEditingController _controller, Function onChanged) {
     return Container(
       width: 35,
       child: TextField(
+        controller: _controller,
         maxLength: 1,
         autofocus: true,
         textAlign: TextAlign.center,
