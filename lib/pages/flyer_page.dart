@@ -18,6 +18,38 @@ class FlyerPage extends StatefulWidget {
 }
 
 class _FlyerPageState extends State<FlyerPage> {
+
+  @override
+  void initState() {
+    _updateCupList(null);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    _updateCupList(context);
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        context.read<MyDataProv>().changeData("FloatingActionButton");
+      }),
+      body: SafeArea(
+        child: Container(
+          color: DefaultCustomTheme.kWelcomePageBackground,
+          width: double.infinity,
+          padding: EdgeInsets.all(10),
+          child: cupList == null  ? Center(child: CircularProgressIndicator()) : ListView.builder(
+            itemCount: cupList == null ? 0 : cupList.length,
+            itemBuilder: (context, index) {
+              return _makeFlyers(index, cupList);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _getCup(String cupType, int id) {
     Map<String, IconData> mapType = {
       'empty': Icons.free_breakfast_outlined,
@@ -90,38 +122,6 @@ class _FlyerPageState extends State<FlyerPage> {
       setState(() {});
     }
   }
-
-  @override
-  void initState() {
-    _updateCupList(null);
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-     _updateCupList(context);
-
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        context.read<MyDataProv>().changeData("FloatingActionButton");
-      }),
-      body: SafeArea(
-        child: Container(
-          color: DefaultCustomTheme.kWelcomePageBackground,
-          width: double.infinity,
-          padding: EdgeInsets.all(10),
-          child: cupList == null  ? Center(child: CircularProgressIndicator()) : ListView.builder(
-            itemCount: cupList == null ? 0 : cupList.length,
-            itemBuilder: (context, index) {
-              return _makeFlyers(index, cupList);
-            },
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class AnimeCup extends StatefulWidget {
@@ -136,8 +136,8 @@ class AnimeCup extends StatefulWidget {
   _AnimeCupState createState() => _AnimeCupState();
 }
 
-class _AnimeCupState extends State<AnimeCup>
-    with SingleTickerProviderStateMixin {
+class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin {
+
   AnimationController _controller;
 
   @override
@@ -163,6 +163,24 @@ class _AnimeCupState extends State<AnimeCup>
     _controller.dispose();
     super.dispose();
   }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () {
+          if(widget.typeCup == 'gift') {
+            Navigator.pushNamed(context, CupGiftPage.routeName,arguments: widget.phoneNumber);
+
+            // Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(phoneNumber:widget.phoneNumber),),);
+          }
+          // setState(() {
+            // _controller.forward(from: 0.0);
+          // });
+        },
+        child: _animeNotAnime(widget.cup, widget.cupStatus));
+  }
+
 
   Transform _transformScale(Widget child, AnimationController controller) {
     return Transform.scale(
@@ -194,21 +212,7 @@ class _AnimeCupState extends State<AnimeCup>
         child:  cup);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () {
-          if(widget.typeCup == 'gift') {
-            Navigator.pushNamed(context, CupGiftPage.routeName,arguments: widget.phoneNumber);
 
-            // Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(phoneNumber:widget.phoneNumber),),);
-          }
-          // setState(() {
-            // _controller.forward(from: 0.0);
-          // });
-        },
-        child: _animeNotAnime(widget.cup, widget.cupStatus));
-  }
 }
 
 class Flyer extends StatelessWidget {
@@ -262,94 +266,53 @@ class EnterCode extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            width: 35,
-            child: TextField(
-              maxLength: 1,
-              autofocus: true,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: const EdgeInsets.all(5),
-                counterText: '',
-              ),
-              onChanged: (value) {
-                node.nextFocus();
-              },
-            ),
-          ),
-          Container(
-            width: 35,
-            child: TextField(
-              maxLength: 1,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: const EdgeInsets.all(5),
-                counterText: '',
-              ),
-              onChanged: (value) {
-                node.nextFocus();
-              },
-            ),
-          ),
-          Container(
-            width: 35,
-            child: TextField(
-              maxLength: 1,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: const EdgeInsets.all(5),
-                counterText: '',
-              ),
-              onChanged: (value) {
-                node.nextFocus();
-              },
-            ),
-          ),
-          Container(
-            width: 35,
-            child: TextField(
-              maxLength: 1,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: const EdgeInsets.all(5),
-                counterText: '',
-              ),
-              onChanged: (value) {
-                context.read<MyDataProv>().changeData(value.toString());
+          _textFiled((_) { node.nextFocus(); }),
+          _textFiled((_) { node.nextFocus(); }),
+          _textFiled((_) { node.nextFocus(); }),
+          _textFiled((value) {
+          context.read<MyDataProv>().changeData(value.toString());
 
-                final snackBar = SnackBar(
-                  content: Text(
-                    'Чашка успешно засчитана!',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  action: SnackBarAction(
-                    label: '',
-                    onPressed: () {
-                      // Some code to undo the change.
-                    },
-                  ),
-                );
-
-                // Find the ScaffoldMessenger in the widget tree
-                // and use it to show a SnackBar.
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          final snackBar = SnackBar(
+            content: Text(
+              'Чашка успешно засчитана!',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            action: SnackBarAction(
+              label: '',
+              onPressed: () {
+                // Some code to undo the change.
               },
             ),
-          ),
+          );
+
+          // Find the ScaffoldMessenger in the widget tree
+          // and use it to show a SnackBar.
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },),
         ],
       ),
       SizedBox(height: 25),
     ]);
+  }
+
+  Widget _textFiled( Function onChanged) {
+    return Container(
+      width: 35,
+      child: TextField(
+        maxLength: 1,
+        autofocus: true,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          contentPadding: const EdgeInsets.all(5),
+          counterText: '',
+        ),
+          onChanged: onChanged,
+      ),
+    );
   }
 }
