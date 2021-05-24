@@ -20,36 +20,54 @@ class FlyerPage extends StatefulWidget {
 
 class _FlyerPageState extends State<FlyerPage> {
 
+
+
   @override
   void initState() {
-    _updateCupList(null);
     super.initState();
+    print(" initState _FlyerPageState");
+    Future.delayed(Duration.zero, () {
+      // Provider.of<MyDataProv>(context,listen: true)..startLoad();
+      context.read<MyDataProv>().startLoad();
+      print(" Provider.of<MyDataProv>(context,listen: false)..startLoad() _FlyerPageState");
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
-
-    _updateCupList(context);
+    print("_FlyerPageState");
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        context.read<MyDataProv>().changeData("FloatingActionButton");
-      }),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   context.read<MyDataProv>().changeData("FloatingActionButton");
+      // }),
       body: SafeArea(
         child: Container(
           color: DefaultCustomTheme.kWelcomePageBackground,
           width: double.infinity,
           padding: EdgeInsets.all(10),
-          child: cupList == null  ? Center(child: CircularProgressIndicator()) : ListView.builder(
-            itemCount: cupList == null ? 0 : cupList.length,
-            itemBuilder: (context, index) {
-              return _makeFlyers(index, cupList);
-            },
-          ),
+          child: context.watch<MyDataProv>().isLoading ? _buildLoading() : _buildContent()
         ),
       ),
     );
   }
+
+  _buildInit(){}
+  Widget _buildLoading() {
+    return Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildContent() {
+    return ListView.builder(
+      itemCount: context.read<MyDataProv>().getData.length,
+      itemBuilder: (context, index) {
+        return _makeFlyers(index, context.read<MyDataProv>().getData);
+      },
+    );
+  }
+  _buildError(){}
+
 
   Widget _getCup(String cupType, int id) {
     Map<String, IconData> mapType = {
@@ -116,12 +134,14 @@ class _FlyerPageState extends State<FlyerPage> {
   List<List<CupModel>> cupList;
   _updateCupList(BuildContext context) async {
 
-    if(context != null) {
-      cupList = await context.watch<MyDataProv>().getData();
-    } else {
-      cupList = await MyDataProv().getData();
-      setState(() {});
-    }
+    // if(context != null) {
+    //   cupList = await context.watch<MyDataProv>().getData();
+    //   cupList = await context.watch<MyDataProv>().changeData("LOAD");
+     await context.watch<MyDataProv>().changeData("LOAD");
+    // } else {
+    //   cupList = await MyDataProv().getData();
+    //   setState(() {});
+    // }
   }
 }
 
@@ -168,6 +188,9 @@ class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+
+    print("_AnimeCupState");
+
     return InkWell(
         onTap: () {
           if(widget.typeCup == 'gift') {
@@ -212,8 +235,6 @@ class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin
         },
         child:  cup);
   }
-
-
 }
 
 class Flyer extends StatelessWidget {
@@ -227,6 +248,9 @@ class Flyer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    print("Flyer");
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -257,7 +281,6 @@ class EnterCode extends StatefulWidget {
 
 class _EnterCodeState extends State<EnterCode> {
 
-
   final _oneTextController = TextEditingController();
   final _twoTextController = TextEditingController();
   final _threeTextController = TextEditingController();
@@ -274,6 +297,8 @@ class _EnterCodeState extends State<EnterCode> {
 
   @override
   Widget build(BuildContext context) {
+
+    print("_EnterCodeState");
 
     final node = FocusScope.of(context);
 
