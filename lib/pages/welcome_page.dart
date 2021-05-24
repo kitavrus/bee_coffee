@@ -8,7 +8,7 @@ class WelcomePage extends StatelessWidget {
 
   static const String routeName = "/welcome_page";
 
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController(text: '9991122');
 
   @override
   Widget build(BuildContext context) {

@@ -66,8 +66,8 @@ class _FlyerPageState extends State<FlyerPage> {
       },
     );
   }
-  _buildError(){}
 
+  _buildError(){}
 
   Widget _getCup(String cupType, int id) {
     Map<String, IconData> mapType = {
@@ -132,17 +132,17 @@ class _FlyerPageState extends State<FlyerPage> {
   }
 
   List<List<CupModel>> cupList;
-  _updateCupList(BuildContext context) async {
+  // _updateCupList(BuildContext context) async {
 
     // if(context != null) {
     //   cupList = await context.watch<MyDataProv>().getData();
     //   cupList = await context.watch<MyDataProv>().changeData("LOAD");
-     await context.watch<MyDataProv>().changeData("LOAD");
+    //  await context.watch<MyDataProv>().changeData("LOAD");
     // } else {
     //   cupList = await MyDataProv().getData();
     //   setState(() {});
     // }
-  }
+  // }
 }
 
 class AnimeCup extends StatefulWidget {
@@ -329,28 +329,6 @@ class _EnterCodeState extends State<EnterCode> {
             } else {
               context.read<MyDataProv>().changeData(enterCodeValue);
             }
-
-
-
-          // final snackBar = SnackBar(
-          //   content: Text(
-          //     'Чашка успешно засчитана!',
-          //     style: TextStyle(
-          //       fontSize: 25,
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //   ),
-          //   action: SnackBarAction(
-          //     label: '',
-          //     onPressed: () {
-          //       // Some code to undo the change.
-          //     },
-          //   ),
-          // );
-          //
-          // // Find the ScaffoldMessenger in the widget tree
-          // // and use it to show a SnackBar.
-          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         },),
         ],
       ),
@@ -363,8 +341,6 @@ class _EnterCodeState extends State<EnterCode> {
       node.nextFocus();
     }
   }
-
-
 
   Widget _textFiled(TextEditingController _controller, Function onChanged) {
     return Container(
