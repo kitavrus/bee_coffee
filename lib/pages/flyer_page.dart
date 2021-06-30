@@ -131,18 +131,7 @@ class _FlyerPageState extends State<FlyerPage> {
     );
   }
 
-  List<List<CupModel>> cupList;
-  // _updateCupList(BuildContext context) async {
-
-    // if(context != null) {
-    //   cupList = await context.watch<MyDataProv>().getData();
-    //   cupList = await context.watch<MyDataProv>().changeData("LOAD");
-    //  await context.watch<MyDataProv>().changeData("LOAD");
-    // } else {
-    //   cupList = await MyDataProv().getData();
-    //   setState(() {});
-    // }
-  // }
+  // List<List<CupModel>> cupList;
 }
 
 class AnimeCup extends StatefulWidget {
@@ -169,8 +158,10 @@ class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin
         upperBound: 1,
         duration: Duration(milliseconds: 800));
 
-    // Future.delayed(Duration(milliseconds: 1000), () {
-    //   _controller.forward(from: 0.0);
+    // Future.delayed(Duration(milliseconds: 100), () {
+    //   if (this.mounted) {
+    //     _controller.forward();
+    //   }
     // });
 
     _controller.forward(from: 0.0);
@@ -184,7 +175,6 @@ class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin
     _controller.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -317,19 +307,8 @@ class _EnterCodeState extends State<EnterCode> {
           _textFiled(_oneTextController,(value) { _onChanged(value,node); }),
           _textFiled(_twoTextController, (value) {  _onChanged(value,node); }),
           _textFiled(_threeTextController,(value) { _onChanged(value,node); }),
-          _textFiled(_fourTextController,(value) {
-
-           String enterCodeValue =_oneTextController.text.toString()
-           + _twoTextController.text.toString()
-           + _threeTextController.text.toString()
-           + _threeTextController.text.toString();
-
-            if(enterCodeValue.length < 4) {
-              showAlertDialog(context,"Ошибка","Введите 4 цифры кода");
-            } else {
-              context.read<MyDataProv>().changeData(enterCodeValue);
-            }
-        },),
+          _textFiled(_fourTextController,_onSubmit,
+          ),
         ],
       ),
       SizedBox(height: 25),
@@ -337,9 +316,36 @@ class _EnterCodeState extends State<EnterCode> {
   }
 
   void _onChanged(String value, node) {
-    if(value.isNotEmpty) {
-      node.nextFocus();
+    if(value.trim().isEmpty) {
+      return;
     }
+
+    if(_isValidEnterCode()) {
+      context.read<MyDataProv>().changeData(_getConcatEnterCode());
+      showAlertDialog(context,"Ура","Чашка успешно засчитана");
+    }
+
+    node.nextFocus();
+  }
+
+  void _onSubmit(String value) {
+      if(!_isValidEnterCode()) {
+        showAlertDialog(context,"Ошибка","Введите 4 цифры кода");
+      } else {
+        context.read<MyDataProv>().changeData(_getConcatEnterCode());
+        showAlertDialog(context,"Ура","Чашка успешно засчитана");
+      }
+  }
+
+  String _getConcatEnterCode() {
+    return _oneTextController.text.toString().trim()
+        + _twoTextController.text.toString().trim()
+        + _threeTextController.text.toString().trim()
+        + _threeTextController.text.toString().trim();
+  }
+
+  bool _isValidEnterCode() {
+    return _getConcatEnterCode().length == 4;
   }
 
   Widget _textFiled(TextEditingController _controller, Function onChanged) {
@@ -348,7 +354,7 @@ class _EnterCodeState extends State<EnterCode> {
       child: TextField(
         controller: _controller,
         maxLength: 1,
-        autofocus: true,
+        // autofocus: true,
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
@@ -356,7 +362,7 @@ class _EnterCodeState extends State<EnterCode> {
           contentPadding: const EdgeInsets.all(5),
           counterText: '',
         ),
-          onChanged: onChanged,
+        onChanged: onChanged,
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Future<void> showAlertDialog(context,String title,String message) async {
   return showDialog<void>(
     context: context,
-    barrierDismissible: true, // user must tap button!
+    // barrierDismissible: true, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(title),
