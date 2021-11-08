@@ -1,14 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:bee_coffee/models/cup_model.dart';
 import 'package:bee_coffee/my_data_prov.dart';
+import 'package:bee_coffee/pages/cup_gift_page.dart';
 import 'package:bee_coffee/thems/default_custom_theme.dart';
 import 'package:bee_coffee/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:provider/provider.dart';
-import 'package:bee_coffee/pages/cup_gift_page.dart';
 
 class FlyerPage extends StatefulWidget {
-
   static const String routeName = "/flyers";
   final String phoneNumber;
 
@@ -19,9 +19,6 @@ class FlyerPage extends StatefulWidget {
 }
 
 class _FlyerPageState extends State<FlyerPage> {
-
-
-
   @override
   void initState() {
     super.initState();
@@ -29,9 +26,9 @@ class _FlyerPageState extends State<FlyerPage> {
     Future.delayed(Duration.zero, () {
       // Provider.of<MyDataProv>(context,listen: true)..startLoad();
       context.read<MyDataProv>().startLoad();
-      print(" Provider.of<MyDataProv>(context,listen: false)..startLoad() _FlyerPageState");
+      print(
+          " Provider.of<MyDataProv>(context,listen: false)..startLoad() _FlyerPageState");
     });
-
   }
 
   @override
@@ -44,16 +41,17 @@ class _FlyerPageState extends State<FlyerPage> {
       // }),
       body: SafeArea(
         child: Container(
-          color: DefaultCustomTheme.kWelcomePageBackground,
-          width: double.infinity,
-          padding: EdgeInsets.all(10),
-          child: context.watch<MyDataProv>().isLoading ? _buildLoading() : _buildContent()
-        ),
+            color: DefaultCustomTheme.kWelcomePageBackground,
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            child: context.watch<MyDataProv>().isLoading
+                ? _buildLoading()
+                : _buildContent()),
       ),
     );
   }
 
-  _buildInit(){}
+  _buildInit() {}
   Widget _buildLoading() {
     return Center(child: CircularProgressIndicator());
   }
@@ -67,7 +65,7 @@ class _FlyerPageState extends State<FlyerPage> {
     );
   }
 
-  _buildError(){}
+  _buildError() {}
 
   Widget _getCup(String cupType, int id) {
     Map<String, IconData> mapType = {
@@ -76,7 +74,7 @@ class _FlyerPageState extends State<FlyerPage> {
       'gift': Icons.free_breakfast_sharp
     };
 
-    if(cupType == 'gift') {
+    if (cupType == 'gift') {
       return Hero(
         tag: id,
         child: Icon(
@@ -126,9 +124,7 @@ class _FlyerPageState extends State<FlyerPage> {
     }).toList();
 
     return Flyer(
-        cupList: makeCupList,
-        enterCode: index == 0 ? EnterCode() : null
-    );
+        cupList: makeCupList, enterCode: index == 0 ? EnterCode() : null);
   }
 
   // List<List<CupModel>> cupList;
@@ -140,14 +136,15 @@ class AnimeCup extends StatefulWidget {
   final String phoneNumber;
   final String typeCup;
 
-  AnimeCup({this.cup, key, this.cupStatus,this.typeCup, this.phoneNumber}) : super(key: key);
+  AnimeCup({this.cup, key, this.cupStatus, this.typeCup, this.phoneNumber})
+      : super(key: key);
 
   @override
   _AnimeCupState createState() => _AnimeCupState();
 }
 
-class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin {
-
+class _AnimeCupState extends State<AnimeCup>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
   @override
@@ -178,23 +175,22 @@ class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-
     print("_AnimeCupState");
 
     return InkWell(
         onTap: () {
-          if(widget.typeCup == 'gift') {
-            Navigator.pushNamed(context, CupGiftPage.routeName,arguments: widget.phoneNumber);
+          if (widget.typeCup == 'gift') {
+            Navigator.pushNamed(context, CupGiftPage.routeName,
+                arguments: widget.phoneNumber);
 
             // Navigator.push(context,MaterialPageRoute(builder: (context)=>CupGiftPage(phoneNumber:widget.phoneNumber),),);
           }
           // setState(() {
-            // _controller.forward(from: 0.0);
+          // _controller.forward(from: 0.0);
           // });
         },
         child: _animeNotAnime(widget.cup, widget.cupStatus));
   }
-
 
   Transform _transformScale(Widget child, AnimationController controller) {
     return Transform.scale(
@@ -223,7 +219,7 @@ class _AnimeCupState extends State<AnimeCup> with SingleTickerProviderStateMixin
               ? _transformScale(child, _controller)
               : _transformRotate(child, _controller);
         },
-        child:  cup);
+        child: cup);
   }
 }
 
@@ -238,7 +234,6 @@ class Flyer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     print("Flyer");
 
     return Card(
@@ -270,7 +265,6 @@ class EnterCode extends StatefulWidget {
 }
 
 class _EnterCodeState extends State<EnterCode> {
-
   final _oneTextController = TextEditingController();
   final _twoTextController = TextEditingController();
   final _threeTextController = TextEditingController();
@@ -287,7 +281,6 @@ class _EnterCodeState extends State<EnterCode> {
 
   @override
   Widget build(BuildContext context) {
-
     print("_EnterCodeState");
 
     final node = FocusScope.of(context);
@@ -304,10 +297,18 @@ class _EnterCodeState extends State<EnterCode> {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _textFiled(_oneTextController,(value) { _onChanged(value,node); }),
-          _textFiled(_twoTextController, (value) {  _onChanged(value,node); }),
-          _textFiled(_threeTextController,(value) { _onChanged(value,node); }),
-          _textFiled(_fourTextController,_onSubmit,
+          _textFiled(_oneTextController, (value) {
+            _onChanged(value, node);
+          }),
+          _textFiled(_twoTextController, (value) {
+            _onChanged(value, node);
+          }),
+          _textFiled(_threeTextController, (value) {
+            _onChanged(value, node);
+          }),
+          _textFiled(
+            _fourTextController,
+            _onSubmit,
           ),
         ],
       ),
@@ -316,35 +317,37 @@ class _EnterCodeState extends State<EnterCode> {
   }
 
   void _onChanged(String value, node) {
-    if(value.trim().isEmpty) {
+    if (value.trim().isEmpty) {
       return;
     }
 
-    if(_isValidEnterCode()) {
+    if (_isValidEnterCode()) {
       context.read<MyDataProv>().changeData(_getConcatEnterCode());
-      showAlertDialog(context,"Ура","Чашка успешно засчитана");
+      showAlertDialog(context, "Ура", "Чашка успешно засчитана");
     }
 
     node.nextFocus();
   }
 
   void _onSubmit(String value) {
-      if(!_isValidEnterCode()) {
-        showAlertDialog(context,"Ошибка","Введите 4 цифры кода");
-      } else {
-        context.read<MyDataProv>().changeData(_getConcatEnterCode());
-        showAlertDialog(context,"Ура","Чашка успешно засчитана");
-      }
+    if (!_isValidEnterCode()) {
+      showAlertDialog(context, "Ошибка", "Введите 4 цифры кода");
+    } else {
+      context.read<MyDataProv>().changeData(_getConcatEnterCode());
+      showAlertDialog(context, "Ура", "Чашка успешно засчитана");
+    }
   }
 
   String _getConcatEnterCode() {
-    return _oneTextController.text.toString().trim()
-        + _twoTextController.text.toString().trim()
-        + _threeTextController.text.toString().trim()
-        + _threeTextController.text.toString().trim();
+    return _oneTextController.text.toString().trim() +
+        _twoTextController.text.toString().trim() +
+        _threeTextController.text.toString().trim() +
+        _fourTextController.text.toString().trim();
   }
 
   bool _isValidEnterCode() {
+    print('_isValidEnterCode: ');
+    print(_getConcatEnterCode());
     return _getConcatEnterCode().length == 4;
   }
 

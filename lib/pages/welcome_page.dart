@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class WelcomePage extends StatelessWidget {
-
   static const String routeName = "/welcome_page";
 
-  final TextEditingController _textEditingController = TextEditingController(text: '9991122');
+  final TextEditingController _textEditingController =
+      TextEditingController(text: '(916) 324-03-01');
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class WelcomePage extends StatelessWidget {
               ),
               SizedBox(height: 80),
               Container(
-                width:250,
+                width: 250,
                 child: TextField(
                   controller: _textEditingController,
                   maxLength: 10,
@@ -54,7 +54,7 @@ class WelcomePage extends StatelessWidget {
                     contentPadding: const EdgeInsets.all(5),
                     counterText: '',
                   ),
-                   // inputFormatters:[ PhoneNumberTextInputFormatter()],
+                  // inputFormatters:[ PhoneNumberTextInputFormatter()],
                   onChanged: (value) {},
                 ),
               ),
@@ -64,8 +64,8 @@ class WelcomePage extends StatelessWidget {
                       DefaultCustomTheme.kGiftCapColor),
                 ),
                 onPressed: () {
-                  
-                  Navigator.pushReplacementNamed(context,FlyerPage.routeName,arguments: _textEditingController.text);
+                  Navigator.pushReplacementNamed(context, FlyerPage.routeName,
+                      arguments: _textEditingController.text);
                   // Navigator.pushReplacement(
                   //   context,
                   //   MaterialPageRoute(builder: (context) {
@@ -84,7 +84,6 @@ class WelcomePage extends StatelessWidget {
     );
   }
 }
-
 
 // class PhoneNumberTextInputFormatter extends TextInputFormatter {
 //   @override
